@@ -1,0 +1,14 @@
+.container {
+    max-width: 522px;
+    margin: 0 auto;
+    display: flex;
+    column-gap: 12px;
+}
+
+.circles__container {
+    margin: 120px auto 0;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    display: flex;
+    column-gap: 16px;
+}

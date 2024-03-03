@@ -1,0 +1,15 @@
+.container {
+    max-width: 567px;
+    margin: 0 auto;
+    display: flex;
+    column-gap: 12px;
+}
+
+.circles__container {
+    margin: 48px auto 0;
+    max-width: 944px;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 16px;
+    row-gap: 48px;
+}
