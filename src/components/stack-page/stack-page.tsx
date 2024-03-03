@@ -16,15 +16,20 @@ export const StackPage: React.FC = () => {
     value: ''
   });
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingAnim, setLoadingAnim] = useState({
+    add: false,
+    remove: false
+  });
+
   const [arr, setArr] = useState<LetterObj[]>([]);
   const [stack] = useState(new Stack<LetterObj>());
 
-  const click = () => {
-    console.log(stack.peak());
-  }
-
   const add = () => {
     setLoading(true);
+    setLoadingAnim({
+      add: true,
+      remove: false
+    });
     if(values.value) {
       stack.push({letter: values.value, state: ElementStates.Default});
       setValues({value: ''}); 
@@ -35,13 +40,22 @@ export const StackPage: React.FC = () => {
           state: index === stack.container.length - 1 ? ElementStates.Changing : ElementStates.Default
         }));
         setArr(updateStack);
+        setLoading(false);
+        setLoadingAnim({
+          add: false,
+          remove: false
+        });
       }, SHORT_DELAY_IN_MS);
-      setLoading(false);
+      
     }
   }
 
   const remove = () => {
     setLoading(true);
+    setLoadingAnim({
+      add: false,
+      remove: true
+    })
     setTimeout(() => {
       stack.pop()
       const updateStack = stack.container.map((item, index) => ({
@@ -49,8 +63,13 @@ export const StackPage: React.FC = () => {
         state: index === stack.container.length - 1 ? ElementStates.Changing : ElementStates.Default
       }))
       setArr(updateStack);
+      setLoading(false);
+      setLoadingAnim({
+        add: false,
+        remove: false
+      });
     }, SHORT_DELAY_IN_MS);
-    setLoading(false);
+    
   }
 
   const onClickClear = () => {
@@ -63,11 +82,11 @@ export const StackPage: React.FC = () => {
     <SolutionLayout title="Стек">
       <div className={styles.container}>
         <div className={styles.container__main}>
-         <Input maxLength={4} isLimitText={true} name="value" onChange={handleChange} disabled={isLoading}/>
-         <Button text="Добавить" isLoader={isLoading} onClick={add}/>
-         <Button text="Удалить" isLoader={isLoading} onClick={remove}/>
+         <Input maxLength={4} isLimitText={true} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
+         <Button text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
+         <Button text="Удалить" isLoader={isLoadingAnim.remove} disabled={isLoading || arr.length < 1 ? true : false} onClick={remove}/>
         </div>
-        <Button text="Очистить" isLoader={isLoading} onClick={onClickClear}/>
+        <Button text="Очистить" disabled={isLoading || arr.length < 1 ? true : false} onClick={onClickClear}/>
       </div>
       <div className={styles.circles__container}>
         {arr.map((item, index) => (

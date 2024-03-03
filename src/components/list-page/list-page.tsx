@@ -7,9 +7,10 @@ import { Circle } from "../ui/circle/circle";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
 import { LinkedList } from "./list-page-functions";
 import { useForm } from "../../hooks/useForm";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 
-//TODO: СРОЧНО ДОДЕЛАТЬ АНИМАЦИЮ!
+//TODO: ДОДЕЛАТЬ АНИМАЦИЮ!
 export const ListPage: React.FC = () => {
 
   const {values, handleChange, setValues} = useForm({
@@ -18,6 +19,16 @@ export const ListPage: React.FC = () => {
   });
   const [list] = useState(new LinkedList<string>())
   const [arr, setArr] = useState<string[]>([]);
+  const [isLoading, setLoading] = useState(false);
+
+  const [isLoadingAnim, setLoadingAnim] = useState({
+    addHead: false,
+    addTail: false,
+    removeHead: false,
+    removeTail: false,
+    addIndex: false,
+    removeIndex: false
+  });
 
   const updateArr = () => {
     setArr(list.toArray());
@@ -25,50 +36,111 @@ export const ListPage: React.FC = () => {
 
   const resetValues = () => {
     setValues({value: '', index: ''});
+    setLoading(false);
     list.getList();
     console.log('Value: ' + values.value);
     console.log('Index: ' + values.index);
   }
 
-  const addHead = () => {
+  const addHead = async () => {
     list.prepend(values.value ? values.value : '');
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      addHead: !prevState.addHead
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     updateArr();
     resetValues();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      addHead: !prevState.addHead
+    }));
   }
 
-  const addTail = () => {
+  const addTail = async () => {
     list.append(values.value ? values.value : '');
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      addTail: !prevState.addTail
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     updateArr();
     resetValues();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      addTail: !prevState.addTail
+    }));
   }
 
-  const removeHead = () => {
+  const removeHead = async () => {
     list.removeHead();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      removeHead: !prevState.removeHead
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     updateArr();
     resetValues();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      removeHead: !prevState.removeHead
+    }));
   }
 
-  const removeTail = () => {
+  const removeTail = async () => {
     list.removeTail();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      removeTail: !prevState.removeTail
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     updateArr();
     resetValues();
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      removeTail: !prevState.removeTail
+    }));
   }
 
-  const addAtIndex = () => {
+  const addAtIndex = async () => {
     const index = parseInt(values.index ?? '');
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      addIndex: !prevState.addIndex
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     if(!isNaN(index) && values.value) {
       list.addAtIndex(index, values.value);
       updateArr();
       resetValues();
+      setLoadingAnim(prevState => ({
+        ...prevState,
+        addIndex: !prevState.addIndex
+      }));
     }
   }
 
-  const removeAtIndex = () => {
+  const removeAtIndex = async () => {
     const index = parseInt(values.index ?? '');
+    setLoadingAnim(prevState => ({
+      ...prevState,
+      removeIndex: !prevState.removeIndex
+    }));
+    setLoading(true);
+    await new Promise(res => setTimeout(res, SHORT_DELAY_IN_MS));
     if(!isNaN(index)) {
       list.removeAtIndex(index);
       updateArr();
       resetValues();
+      setLoadingAnim(prevState => ({
+        ...prevState,
+        removeIndex: !prevState.removeIndex
+      }));
     }
   }
 
@@ -76,20 +148,30 @@ export const ListPage: React.FC = () => {
     <SolutionLayout title="Связный список">
       <div className={styles.main__container}>
         <div className={styles.input__container}>
-          <Input maxLength={4} isLimitText={true} name='value' value={values.value} onChange={handleChange}/>
+          <Input maxLength={4} isLimitText={true} name='value' value={values.value} onChange={handleChange} disabled={isLoading}/>
         </div>
-        <Button text='Добавить в head' onClick={addHead} disabled={values.value === '' ? true : false}/>
-        <Button text='Добавить в tail' onClick={addTail} disabled={values.value === '' ? true : false}/>
-        <Button text='Удалить из head' onClick={removeHead} disabled={arr.length < 1 ? true : false} />
-        <Button text='Удалить из tail' onClick={removeTail} disabled={arr.length < 1 ? true : false} />
+        <Button text='Добавить в head' onClick={addHead} isLoader={isLoadingAnim.addHead} disabled={!values.value || isLoading || list.getLength() > 5}/>
+        <Button text='Добавить в tail' onClick={addTail} isLoader={isLoadingAnim.addTail} disabled={!values.value || isLoading || list.getLength() > 5}/>
+        <Button text='Удалить из head' onClick={removeHead} isLoader={isLoadingAnim.removeHead} disabled={arr.length < 1 ? true : false || isLoading} />
+        <Button text='Удалить из tail' onClick={removeTail} isLoader={isLoadingAnim.removeTail} disabled={arr.length < 1 ? true : false || isLoading} />
       </div>
       <div className={styles.main__container}>
         <div className={styles.input__container}>
-          <Input name='index' value={values.index} onChange={handleChange}/>
+          <Input type="number" name='index' value={values.index} onChange={handleChange} disabled={isLoading}/>
         </div>
         <div className={styles.btn__container}>
-        <Button text='Добавить по индексу' onClick={addAtIndex} disabled={!values.index || !values.value ? true : false}/>
-        <Button text='Удалить по индексу' onClick={removeAtIndex} disabled={!values.index || arr.length < 1 ? true : false}/>
+        <Button text='Добавить по индексу' onClick={addAtIndex} isLoader={isLoadingAnim.addIndex} disabled={
+          !values.index || 
+          !values.value || 
+          isLoading || 
+          Number(values.index) < 0 || 
+          Number(values.index) > list.getLength() ||
+          list.getLength() > 5}/>
+        <Button text='Удалить по индексу' onClick={removeAtIndex} isLoader={isLoadingAnim.removeIndex} disabled={
+          !values.index || 
+          isLoading || 
+          Number(values.index) < 0 || 
+          Number(values.index) > list.getLength() - 1}/>
         </div>
       </div>
       <div className={styles.container}>

@@ -16,6 +16,10 @@ export const QueuePage: React.FC = () => {
     value: ''
   });
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingAnim, setLoadingAnim] = useState({
+    add: false,
+    remove: false
+  });
 
   const emptyArr = Array.from({length: 7}, () => ({
     letter: '',
@@ -24,12 +28,13 @@ export const QueuePage: React.FC = () => {
   const [arr, setArr] = useState<LetterObj[]>(emptyArr);
   const [queue] = useState(new Queue<LetterObj>(7));
 
-  const click = () => {
-    console.log(queue.peak());
-  }
-
   const add = () => {
     setLoading(true);
+    setValues({value: ''}); 
+    setLoadingAnim({
+      add: true,
+      remove: false
+    });
     if(values.value) {
       queue.enqueue({letter: values.value, state: ElementStates.Default});
 
@@ -46,12 +51,21 @@ export const QueuePage: React.FC = () => {
         };
         setArr([...arr]);
         setLoading(false);
+        setLoadingAnim({
+          add: false,
+          remove: false
+        });
       }, SHORT_DELAY_IN_MS);
     }
   }
 
   const remove = () => {
     setLoading(true);
+    setValues({value: ''}); 
+    setLoadingAnim({
+      add: false,
+      remove: true
+    });
     if(!queue.isEmpty()) {
       const head = queue.getHead();
       arr[head] = {
@@ -69,6 +83,10 @@ export const QueuePage: React.FC = () => {
         };
         setArr([...arr]);
         setLoading(false);
+        setLoadingAnim({
+          add: false,
+          remove: false
+        });
       }, SHORT_DELAY_IN_MS);
     } else {
       setLoading(false);
@@ -85,11 +103,11 @@ export const QueuePage: React.FC = () => {
     <SolutionLayout title="Очередь">
         <div className={styles.container}>
         <div className={styles.container__main}>
-         <Input maxLength={4} isLimitText={true} name="value" onChange={handleChange} disabled={isLoading}/>
-         <Button text="Добавить" isLoader={isLoading} onClick={add}/>
-         <Button text="Удалить" isLoader={isLoading} onClick={remove}/>
+         <Input maxLength={4} isLimitText={true} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
+         <Button text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
+         <Button text="Удалить" isLoader={isLoadingAnim.remove} onClick={remove} disabled={isLoading || queue.isEmpty() ? true : false}/>
         </div>
-        <Button text="Очистить" isLoader={isLoading} onClick={onClickClear}/>
+        <Button text="Очистить" onClick={onClickClear} disabled={isLoading || queue.isEmpty() ? true : false}/>
       </div>
       <div className={styles.circles__container}>
         {arr.map((item, index) => (

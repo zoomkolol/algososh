@@ -16,6 +16,9 @@ export class Node<T> {
     addAtIndex: (index: number, value: T) => void;
     removeAtIndex: (index: number) => void;
     getList: () => void;
+    getHead: () => T | undefined;
+    getTail: () => T | undefined;
+    getLength: () => number;
     toArray: () => T[];
   }
 
@@ -144,6 +147,18 @@ export class LinkedList<T> implements ILinkedList<T> {
       console.log(cur.value);
       cur = cur.next;
     }
+  }
+
+  getHead = () => {
+    return this.head?.value;
+  }
+
+  getTail = () => {
+    return this.tail?.value;
+  }
+
+  getLength = () => {
+    return this.length;
   }
 
   toArray = () => {

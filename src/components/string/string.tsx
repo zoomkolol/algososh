@@ -19,6 +19,7 @@ export const StringComponent: React.FC = () => {
 
   const onClick = () => {
     setLoading(true);
+    setValues({value: ''});
 
     const letters: LetterObj[] = values.value?.split('').map(letter => ({
       letter: letter,
@@ -58,8 +59,8 @@ export const StringComponent: React.FC = () => {
   return (
     <SolutionLayout title="Строка">
       <div className={styles.container}>
-        <Input isLimitText={true} maxLength={11} name="value" onChange={handleChange}/>
-        <Button text="Развернуть" onClick={onClick} isLoader={isLoading}/>
+        <Input isLimitText={true} maxLength={11} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
+        <Button text="Развернуть" onClick={onClick} isLoader={isLoading} disabled={!values.value}/>
       </div>
       <div className={styles.circles__container}>
         {lettersArr.map((letter, index) => (

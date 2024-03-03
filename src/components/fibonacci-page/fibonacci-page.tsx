@@ -36,12 +36,13 @@ export const FibonacciPage: React.FC = () => {
     setFibonacciArr([]);
     setLoading(true);
     updateFibonacci(Number(values.value));
+    setValues({value: ''});
   }
 
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <div className={styles.container}>
-        <Input min={1} max={19} type="number" isLimitText={true} name="value" onChange={handleChange}/>
+        <Input min={1} max={19} type="number" isLimitText={true} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
         <Button text="Рассчитать" onClick={onClick} disabled={values.value === '' || Number(values.value) < 1 || Number(values.value) > 19 } isLoader={isLoading} />
       </div>
       <div className={styles.circles__container}>

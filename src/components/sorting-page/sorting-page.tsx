@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from './sorting-page.module.css';
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { RadioInput } from "../ui/radio-input/radio-input";
@@ -46,9 +46,11 @@ export const SortingPage: React.FC = () => {
         selectionSortDesc(arr, setArr, setLoading, setLoadingAnim);
       }
     }
-
-    
   }
+
+  useEffect(() => {
+    createArr();
+  }, []);
 
   return (
     <SolutionLayout title="Сортировка массива">
