@@ -146,28 +146,28 @@ export const ListPage: React.FC = () => {
 
   return (
     <SolutionLayout title="Связный список">
-      <div className={styles.main__container}>
+      <div data-cy="list-page" className={styles.main__container}>
         <div className={styles.input__container}>
           <Input maxLength={4} isLimitText={true} name='value' value={values.value} onChange={handleChange} disabled={isLoading}/>
         </div>
-        <Button text='Добавить в head' onClick={addHead} isLoader={isLoadingAnim.addHead} disabled={!values.value || isLoading || list.getLength() > 5}/>
-        <Button text='Добавить в tail' onClick={addTail} isLoader={isLoadingAnim.addTail} disabled={!values.value || isLoading || list.getLength() > 5}/>
-        <Button text='Удалить из head' onClick={removeHead} isLoader={isLoadingAnim.removeHead} disabled={arr.length < 1 ? true : false || isLoading} />
-        <Button text='Удалить из tail' onClick={removeTail} isLoader={isLoadingAnim.removeTail} disabled={arr.length < 1 ? true : false || isLoading} />
+        <Button data-cy="btn-add-head" text='Добавить в head' onClick={addHead} isLoader={isLoadingAnim.addHead} disabled={!values.value || isLoading || list.getLength() > 5}/>
+        <Button data-cy="btn-add-tail" text='Добавить в tail' onClick={addTail} isLoader={isLoadingAnim.addTail} disabled={!values.value || isLoading || list.getLength() > 5}/>
+        <Button data-cy="btn-delete-head" text='Удалить из head' onClick={removeHead} isLoader={isLoadingAnim.removeHead} disabled={arr.length < 1 ? true : false || isLoading} />
+        <Button data-cy="btn-delete-tail" text='Удалить из tail' onClick={removeTail} isLoader={isLoadingAnim.removeTail} disabled={arr.length < 1 ? true : false || isLoading} />
       </div>
       <div className={styles.main__container}>
         <div className={styles.input__container}>
           <Input type="number" name='index' value={values.index} onChange={handleChange} disabled={isLoading}/>
         </div>
         <div className={styles.btn__container}>
-        <Button text='Добавить по индексу' onClick={addAtIndex} isLoader={isLoadingAnim.addIndex} disabled={
+        <Button data-cy="btn-add-index" text='Добавить по индексу' onClick={addAtIndex} isLoader={isLoadingAnim.addIndex} disabled={
           !values.index || 
           !values.value || 
           isLoading || 
           Number(values.index) < 0 || 
           Number(values.index) > list.getLength() ||
           list.getLength() > 5}/>
-        <Button text='Удалить по индексу' onClick={removeAtIndex} isLoader={isLoadingAnim.removeIndex} disabled={
+        <Button data-cy="btn-delete-index" text='Удалить по индексу' onClick={removeAtIndex} isLoader={isLoadingAnim.removeIndex} disabled={
           !values.index || 
           isLoading || 
           Number(values.index) < 0 || 
