@@ -6,8 +6,10 @@ import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { useForm } from "../../hooks/useForm";
 import { Circle } from "../ui/circle/circle";
-import { DELAY_IN_MS } from "../../constants/delays";
-import { LetterObj } from "../../types/letter-obj";
+import { getReversingStringSteps } from "./string-algorithm";
+import { delay } from "../../utils/functions/delay";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+
 
 export const StringComponent: React.FC = () => {
 
@@ -15,56 +17,42 @@ export const StringComponent: React.FC = () => {
     value: ''
   });
   const [isLoading, setLoading] = useState(false);
-  const [lettersArr, setLetterArr] = useState<LetterObj[]>([]);
+  const [lettersArr, setLetterArr] = useState<string[]>([]);
 
-  const onClick = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const onClick = async () => {
     setLoading(true);
+    if(!values.value) return
+    const steps = getReversingStringSteps(values.value);
+    setCurrentStep(0);
+
     setValues({value: ''});
 
-    const letters: LetterObj[] = values.value?.split('').map(letter => ({
-      letter: letter,
-      state: ElementStates.Default
-    })) ?? [];
-    setLetterArr(letters);
+    for(let i = 0; i < steps.length; i++) {
+      setLetterArr([...steps[i]]);
+      await delay(SHORT_DELAY_IN_MS);
+      setCurrentStep(currentStep => currentStep + 1);
+    }
 
-    setTimeout(() => {
-      const swap = (start: number, end: number) => {
-        if(start < end) {
-          letters[start].state = ElementStates.Changing;
-          letters[end].state = ElementStates.Changing;
-          setLetterArr([...letters]);
+    setLoading(false);
+  }
 
-          setTimeout(() => {
-            const temp = letters[start];
-            letters[start] = letters[end];
-            letters[end] = temp;
-            letters[start].state = ElementStates.Modified;
-            letters[end].state = ElementStates.Modified;
-            setLetterArr([...letters]);
-          }, DELAY_IN_MS);
-  
-          setTimeout(() => {
-            swap(start + 1, end - 1);
-          }, DELAY_IN_MS);
-        } else {
-          letters[start].state = ElementStates.Modified
-          setLoading(false);
-        }
-      }
-  
-      swap(0, letters.length - 1);
-    }, DELAY_IN_MS);   
+  const getLetterState = (index: number, maxIndex: number) => {
+    return (index < currentStep || index > maxIndex - currentStep) ? ElementStates.Modified
+          : (index === currentStep || index === maxIndex - currentStep) ? ElementStates.Changing
+          : ElementStates.Default
   }
 
   return (
     <SolutionLayout title="Строка">
-      <div className={styles.container}>
+      <div data-cy="recursion-page" className={styles.container}>
         <Input isLimitText={true} maxLength={11} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
-        <Button text="Развернуть" onClick={onClick} isLoader={isLoading} disabled={!values.value}/>
+        <Button data-cy="submit" text="Развернуть" onClick={onClick} isLoader={isLoading} disabled={!values.value}/>
       </div>
       <div className={styles.circles__container}>
         {lettersArr.map((letter, index) => (
-          <Circle letter={letter.letter} key={index} state={letter.state}/>
+          <Circle letter={letter} key={index} state={getLetterState(index, lettersArr.length - 1)}/>
         ))}
       </div>
     </SolutionLayout>

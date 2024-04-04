@@ -101,13 +101,13 @@ export const QueuePage: React.FC = () => {
 
   return (
     <SolutionLayout title="Очередь">
-        <div className={styles.container}>
+        <div data-cy="queue-page" className={styles.container}>
         <div className={styles.container__main}>
          <Input maxLength={4} isLimitText={true} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
-         <Button text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
-         <Button text="Удалить" isLoader={isLoadingAnim.remove} onClick={remove} disabled={isLoading || queue.isEmpty() ? true : false}/>
+         <Button data-cy="btn-add" text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
+         <Button data-cy="btn-delete" text="Удалить" isLoader={isLoadingAnim.remove} onClick={remove} disabled={isLoading || queue.isEmpty() ? true : false}/>
         </div>
-        <Button text="Очистить" onClick={onClickClear} disabled={isLoading || queue.isEmpty() ? true : false}/>
+        <Button data-cy="btn-clear" text="Очистить" onClick={onClickClear} disabled={isLoading || queue.isEmpty() ? true : false}/>
       </div>
       <div className={styles.circles__container}>
         {arr.map((item, index) => (

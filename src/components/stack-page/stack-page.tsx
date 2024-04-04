@@ -80,13 +80,13 @@ export const StackPage: React.FC = () => {
 
   return (
     <SolutionLayout title="Стек">
-      <div className={styles.container}>
+      <div data-cy="stack-page" className={styles.container}>
         <div className={styles.container__main}>
          <Input maxLength={4} isLimitText={true} name="value" value={values.value} onChange={handleChange} disabled={isLoading}/>
-         <Button text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
-         <Button text="Удалить" isLoader={isLoadingAnim.remove} disabled={isLoading || arr.length < 1 ? true : false} onClick={remove}/>
+         <Button data-cy='btn-add' text="Добавить" isLoader={isLoadingAnim.add} onClick={add} disabled={!values.value}/>
+         <Button data-cy='btn-delete' text="Удалить" isLoader={isLoadingAnim.remove} disabled={isLoading || arr.length < 1 ? true : false} onClick={remove}/>
         </div>
-        <Button text="Очистить" disabled={isLoading || arr.length < 1 ? true : false} onClick={onClickClear}/>
+        <Button data-cy='btn-clear' text="Очистить" disabled={isLoading || arr.length < 1 ? true : false} onClick={onClickClear}/>
       </div>
       <div className={styles.circles__container}>
         {arr.map((item, index) => (
